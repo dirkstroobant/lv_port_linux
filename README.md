@@ -39,6 +39,7 @@ Install all system dependencies in one go:
 # Debian / Ubuntu
 sudo apt install \
   build-essential cmake python3 python3-venv ninja-build \
+  pkg-config libcurl4-openssl-dev libcjson-dev \
   libsdl2-dev \
   libwayland-dev libxkbcommon-dev wayland-protocols \
   libx11-dev \
@@ -51,7 +52,7 @@ sudo apt install \
 ```bash
 # Arch
 sudo pacman -S \
-    git cmake python ninja \
+    git cmake python ninja pkgconf curl cjson \
     sdl2 \
     wayland wayland-protocols libxkbcommon \
     libx11 \
@@ -65,6 +66,7 @@ sudo pacman -S \
 # Fedora
 sudo dnf install \
   @development-tools gcc-c++ cmake python3 python3-devel ninja-build \
+  pkgconf-pkg-config libcurl-devel cjson-devel \
   SDL2-devel \
   wayland-devel wayland-protocols-devel libxkbcommon-devel \
   libX11-devel \

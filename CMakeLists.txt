@@ -95,15 +95,27 @@ list(APPEND LIBS lvgl::examples)
 endif()
 
 target_link_libraries(lvgl_linux PUBLIC ${LIBS})
-add_executable(lvglsim src/main.c)
-target_link_libraries(lvglsim PUBLIC lvgl_linux ${EXTRA_LIBS})
+
+find_package(Threads REQUIRED)
+find_package(CURL REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(CJSON REQUIRED IMPORTED_TARGET libcjson)
+
+add_executable(homewiz src/main.cpp src/my_ui.c)
+target_link_libraries(homewiz PUBLIC lvgl_linux ${EXTRA_LIBS} Threads::Threads PkgConfig::CJSON)
+if(TARGET CURL::libcurl)
+    target_link_libraries(homewiz PUBLIC CURL::libcurl)
+else()
+    target_include_directories(homewiz PRIVATE ${CURL_INCLUDE_DIRS})
+    target_link_libraries(homewiz PUBLIC ${CURL_LIBRARIES})
+endif()
 
 if(CONFIG_LV_USE_DEMO_TRUCK)
-    target_compile_definitions(lvglsim PUBLIC CONFIG_LV_USE_DEMO_TRUCK)
+    target_compile_definitions(homewiz PUBLIC CONFIG_LV_USE_DEMO_TRUCK)
 endif()
 
 if(WERROR)
-    target_compile_options(lvglsim PRIVATE -Werror)
+    target_compile_options(homewiz PRIVATE -Werror)
     target_compile_options(lvgl_linux PRIVATE -Werror)
     if(TARGET lvgl)
         target_compile_options(lvgl PRIVATE -Werror)
@@ -123,4 +135,4 @@ install(TARGETS lvgl_linux
     ARCHIVE DESTINATION lib
 )
 
-add_custom_target(run COMMAND ${EXECUTABLE_OUTPUT_PATH}/lvglsim DEPENDS lvglsim)
+add_custom_target(run COMMAND ${EXECUTABLE_OUTPUT_PATH}/homewiz DEPENDS homewiz)
